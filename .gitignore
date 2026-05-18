@@ -38,6 +38,9 @@ tang-verse-explorer/
 # ── 设计文档（生产运行不需要；在 GitHub 网页或开发机查看）──
 docs/
 
+# ── 部署手册（仅本机阅读，不给服务器 pull）──
+deploy/部署手册.md
+
 # ── 本地开发栈（生产用 deploy/docker-compose.prod.yml）──
 docker-compose.yml
 requirements-dev.txt

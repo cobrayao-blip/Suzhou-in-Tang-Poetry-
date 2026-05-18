@@ -25,4 +25,4 @@ npm run dev
 - 前端：http://127.0.0.1:5173  
 - API 文档：http://127.0.0.1:8000/docs  
 
-生产部署（`https://tp.textengine.cn`）：见 [`deploy/部署手册.md`](../deploy/部署手册.md)。
+生产部署：本机 [`deploy/部署手册.md`](../deploy/部署手册.md)（不入 GitHub）；服务器见 [`deploy/GIT-仓库与生产.md`](../deploy/GIT-仓库与生产.md)。
