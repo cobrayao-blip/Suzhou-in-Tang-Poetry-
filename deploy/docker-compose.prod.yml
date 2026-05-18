@@ -4,8 +4,7 @@
 # 首次导入数据：
 #   docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env.prod --profile bootstrap run --rm bootstrap
 #
-# 默认仅绑定 127.0.0.1:18080，由宿主机 Nginx 将 tp.textengine.cn 反代到此端口
-# （不占用公网 80/443，由 deploy/server/ 边缘反代）
+# 默认 web 仅 127.0.0.1:18080。对外 HTTPS 用本仓库 edge（--profile edge），见 deploy/server/README.md
 
 name: quatangshi
 
@@ -72,6 +71,19 @@ services:
         condition: service_healthy
     ports:
       - "127.0.0.1:${QTS_HTTP_PORT:-18080}:80"
+    restart: unless-stopped
+
+  edge:
+    profiles: [edge]
+    image: nginx:1.27-alpine
+    depends_on:
+      - web
+    ports:
+      - "${QTS_PUBLIC_IP:?set QTS_PUBLIC_IP in deploy/.env.prod}:443:443"
+      - "${QTS_PUBLIC_IP:?}:80:80"
+    volumes:
+      - ./server/tp.textengine.cn.edge.conf:/etc/nginx/conf.d/default.conf:ro
+      - ${QTS_CERT_DIR:-/data/qts/cert}:/etc/nginx/ssl:ro
     restart: unless-stopped
 
   bootstrap:

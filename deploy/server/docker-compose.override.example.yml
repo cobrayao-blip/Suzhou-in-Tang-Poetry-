@@ -1,0 +1,15 @@
+# 复制到「占用 443 的 web 容器」所在目录，命名为 docker-compose.override.yml
+# （Compose 会自动合并；该文件通常不进 Git，清嘉录 git pull 不会删它）
+#
+#   cd /data/qjl/app   # 路径以你机器为准
+#   sudo cp /opt/quatangshi/deploy/server/docker-compose.override.example.yml ./docker-compose.override.yml
+#   sudo docker compose -f docker-compose.prod.yml -f docker-compose.override.yml \
+#        --env-file .env.docker.prod up -d web
+
+services:
+  web:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/nginx-extra/tp.textengine.cn.conf:/etc/nginx/conf.d/99-tp-quatangshi.conf:ro
+      - /data/qts/cert:/etc/nginx/ssl-tp:ro
