@@ -16,7 +16,7 @@
 | 废弃代码 | `tang-verse-explorer/` | 旧原型 |
 | 设计文档 | `docs/` | 生产不读；开发在 GitHub 网页看（**已从仓库移除**，本地 `docs/` 仍保留） |
 | 本地开发 | `docker-compose.yml`、`requirements-dev.txt` | 生产用 `deploy/docker-compose.prod.yml` |
-| 旧部署方式 | `deploy/pack-for-server.ps1`、`deploy/nginx-host-tp.conf` | 已改为 git pull + 清嘉录 Nginx 片段 |
+| 旧部署方式 | `pack-for-server.ps1`、`qingjialu-*.conf` 等 | 已删除；反代见 `deploy/server/` |
 | 语料校对脚本 | `tools/scan_*`、`normalize_*`、`validate_*` 等 | 仅开发机改 HTML；**不进 GitHub** |
 
 ---
@@ -32,9 +32,9 @@
 | `tools/sync_postgres.py` | bootstrap 导入 PostgreSQL |
 | `tools/corpus_paths.py` | 上述脚本依赖 |
 | `apps/api/`、`apps/web/` | Docker 构建前后端 |
-| `deploy/` | `docker-compose.prod.yml`、`Dockerfile.prod`、Nginx、`部署手册.md`、`qingjialu-nginx-tp.snippet.conf` |
+| `deploy/` | Compose、Dockerfile、容器内 `nginx.docker.conf`、`部署手册.md`、`server/tp.textengine.cn.conf` |
 | `db/schema.sql` | 数据库表结构 |
-| `requirements-search.txt`、`apps/api/requirements.txt` | Python 依赖 |
+| `deploy/requirements.api.prod.txt` | Docker 构建时 Python 依赖 |
 | `.env.example`、`deploy/.env.prod.example` | 环境变量模板 |
 
 ---

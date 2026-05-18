@@ -5,7 +5,7 @@
 #   docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env.prod --profile bootstrap run --rm bootstrap
 #
 # 默认仅绑定 127.0.0.1:18080，由宿主机 Nginx 将 tp.textengine.cn 反代到此端口
-# （避免与清嘉录 qjl.textengine.cn 抢占 80/443）
+# （不占用公网 80/443，由 deploy/server/ 边缘反代）
 
 name: quatangshi
 
