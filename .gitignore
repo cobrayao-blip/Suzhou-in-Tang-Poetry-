@@ -1,0 +1,29 @@
+# 环境变量（含密钥）
+.env
+.env.*
+!.env.example
+!deploy/.env.prod.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+apps/web/dist/
+
+# 可重建索引（由 tools/build_phase1_index.py 生成）
+index/*.sqlite
+index/*.jsonl
+index/*_report.json
+
+# 部署打包产物
+dist-quatangshi-deploy.zip
+deploy/.env.prod
+
+# 编辑器 / OS
+.DS_Store
+Thumbs.db
+*.log

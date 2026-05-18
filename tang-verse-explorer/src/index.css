@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Noto+Serif+SC:wght@300;500;700&family=Zhi+Mang+Xing&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif-zh: "Noto Serif SC", serif;
+  --font-serif-en: "Playfair Display", serif;
+  --font-display: "Cinzel", serif;
+  --font-hand: "Zhi Mang Xing", cursive;
+}
+
+:root {
+  --bg-cultural: #f5f5f0;
+  --ink-primary: #1a1a1a;
+  --accent-olive: #5A5A40;
+}
+
+@layer base {
+  body {
+    @apply antialiased overflow-hidden;
+    font-family: var(--font-serif-zh);
+    background-color: var(--bg-cultural);
+    color: var(--ink-primary);
+  }
+}
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.2);
+}

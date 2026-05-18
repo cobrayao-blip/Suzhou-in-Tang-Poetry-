@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700&family=Zhi+Mang+Xing&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-serif-zh: "Noto Serif SC", serif;
+  --font-hand: "Zhi Mang Xing", cursive;
+}
+
+:root {
+  --bg-cultural: #f4f1ea;
+  --ink: #1c1b18;
+  --accent: #5a4a3a;
+  --accent-soft: #8b7355;
+  --card: rgba(255, 255, 252, 0.72);
+  --border: rgba(28, 27, 24, 0.08);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-serif-zh);
+    background: var(--bg-cultural);
+    color: var(--ink);
+    margin: 0;
+    overflow: hidden;
+  }
+}

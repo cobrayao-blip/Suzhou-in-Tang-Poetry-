@@ -1,0 +1,40 @@
+---
+description: 编辑全唐诗 quantangshi 正文、目录与索引时的约定
+globs: quantangshi/**/*
+alwaysApply: false
+---
+
+# 全唐诗语料编辑
+
+## 范围
+
+仅修改任务相关的 `text*.html`；不动无关卷与 `flow0001.css`。
+
+## 卷名
+
+- 卷名用 `第…卷`（如 `第六百五十八卷`），勿用 `卷六百五十八卷`。
+- 修改 `<title>` 或 `<h1 class="OneTitle">` 时，**同步** `juanmu.xml` 中同名 `<item>`。
+- 篇题中的 `卷658_1` 是篇内编号，**不要**改成 `第…卷`。
+
+## 篇题（Bold）
+
+- 格式：`卷{N}_{序号}【…】`；缺 `卷` 前缀时与同文件相邻篇题对齐。
+- 篇题跨多行 `Bold` 时，合并到 `【…】` 闭合为止，勿截断。
+- 作者一般在紧接的 `Quotation`；若在第二个 `Bold`，保留结构，勿误删。
+
+## 完成后
+
+```bash
+python tools/build_phase1_index.py
+```
+
+若批量改过卷名，先运行：
+
+```bash
+python tools/normalize_juan_titles.py
+```
+
+## 禁止
+
+- 未要求时不要 `git commit`。
+- 不要用正则大批量改诗句正文（易误伤标点与异体字）。

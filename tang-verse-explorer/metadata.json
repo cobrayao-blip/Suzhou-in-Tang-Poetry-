@@ -1,0 +1,8 @@
+{
+  "name": "Tang Verse Explorer",
+  "description": "A comprehensive search and visualization platform for the Complete Tang Poems, featuring spatial clustering, imagery retrieval, and poetic relationship mapping.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

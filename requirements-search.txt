@@ -1,0 +1,3 @@
+# 全文检索（Meilisearch 索引构建与查询脚本）
+# 安装：pip install -r requirements-search.txt
+meilisearch>=0.31.0,<0.35.0
