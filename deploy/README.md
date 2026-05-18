@@ -1,10 +1,27 @@
 # 全唐诗检索 — 生产部署
 
+> **零基础请直接阅读：[部署手册.md](./部署手册.md)**（逐步复制命令即可）。  
+> **Git 与生产分工**：[GIT-仓库与生产.md](./GIT-仓库与生产.md)。  
+> 本文档供已熟悉 Linux/Docker 的维护者速查。
+
 正式域名：**`https://tp.textengine.cn`**（与清嘉录 `qjl.textengine.cn` 平级，独立子域）。
+
+## 腾讯云（与清嘉录同机）
+
+| 项 | 值 |
+|----|-----|
+| 公网 IP | **43.142.176.9**（DNS A 记录指向此地址，勿填内网 172.17.0.7） |
+| 内网 IP | 172.17.0.7（VPC `172.17.0.0/16`） |
+| 系统 | Ubuntu Server 24.04 LTS，2 核 / 4GiB |
+| 磁盘 | 系统盘 60GiB + 数据盘 60GiB（库与索引建议放数据盘 `/data/qts/`） |
+| Docker | 29.x（`docker compose`） |
+| 清嘉录 | 同机 `qjl.textengine.cn`，见 `/data/qjl/app` |
+
+4GiB 内存可同时跑 PostgreSQL + Meilisearch + API；首次 `bootstrap` 导入时 CPU/磁盘会忙一阵，属正常。
 
 ## 1. DNS
 
-在 `textengine.cn` 控制台为 **`tp`** 添加 **A 记录** → 服务器公网 IP（与清嘉录可同机）。
+在 `textengine.cn` 控制台为 **`tp`** 添加 **A 记录** → **`43.142.176.9`**。
 
 ## 2. 与清嘉录共存
 
@@ -31,7 +48,8 @@ mkdir -p /opt/quatangshi /data/qts/pgdata /data/qts/meili
 ```powershell
 python tools/build_phase1_index.py
 .\deploy\pack-for-server.ps1
-scp dist-quatangshi-deploy.zip root@<服务器IP>:/opt/quatangshi/
+scp dist-quatangshi-deploy.zip ubuntu@43.142.176.9:/tmp/
+# 登录服务器后：sudo mv /tmp/dist-quatangshi-deploy.zip /opt/quatangshi/ && cd /opt/quatangshi && sudo unzip -o dist-quatangshi-deploy.zip
 ```
 
 ```bash
