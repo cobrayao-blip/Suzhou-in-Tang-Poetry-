@@ -22,11 +22,38 @@
     height: 100%;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     font-family: var(--font-serif-zh);
     background: var(--bg-cultural);
     color: var(--ink);
     margin: 0;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+@layer utilities {
+  .safe-top {
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+  }
+
+  .safe-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
   }
 }
