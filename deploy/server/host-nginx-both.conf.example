@@ -1,0 +1,68 @@
+# 宿主机 /etc/nginx/sites-enabled/textengine.conf
+# 443 由本机 Nginx 统一处理：qjl → 127.0.0.1:18081，tp → 127.0.0.1:18080
+#
+# 前置：清嘉录 web 已改为只监听 127.0.0.1:18081（见 qjl-仅释放443-端口.override.example.yml）
+# 全唐诗 web 监听 127.0.0.1:18080（或 0.0.0.0:18080，仅本机访问即可）
+
+upstream qjl_app {
+    server 127.0.0.1:18081;
+}
+
+upstream qts_app {
+    server 127.0.0.1:18080;
+}
+
+# ---------- qjl.textengine.cn ----------
+
+server {
+    listen 80;
+    server_name qjl.textengine.cn;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name qjl.textengine.cn;
+
+    ssl_certificate     /data/qjl/app/cert/qjl.textengine.cn_bundle.crt;
+    ssl_certificate_key /data/qjl/app/cert/qjl.textengine.cn.key;
+
+    client_max_body_size 20m;
+
+    location / {
+        proxy_pass http://qjl_app;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+}
+
+# ---------- tp.textengine.cn ----------
+
+server {
+    listen 80;
+    server_name tp.textengine.cn;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name tp.textengine.cn;
+
+    ssl_certificate     /data/qts/cert/tp.textengine.cn_bundle.crt;
+    ssl_certificate_key /data/qts/cert/tp.textengine.cn.key;
+
+    client_max_body_size 20m;
+
+    location / {
+        proxy_pass http://qts_app;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_read_timeout 120s;
+    }
+}

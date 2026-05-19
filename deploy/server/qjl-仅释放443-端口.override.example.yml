@@ -1,0 +1,15 @@
+# 【清嘉录目录】一次性：让 web 不再占用公网 443，改由宿主机 Nginx 终止 HTTPS
+# 复制为 /data/qjl/app/docker-compose.override.yml（勿含全唐诗 tp 配置）
+#
+#   cd /data/qjl/app
+#   sudo cp /opt/quatangshi/deploy/server/qjl-仅释放443-端口.override.example.yml \
+#        ./docker-compose.override.yml
+#   sudo docker compose -f docker-compose.prod.yml -f docker-compose.override.yml \
+#        --env-file .env.docker.prod up -d web
+#
+# 然后由宿主机 Nginx 监听 443（见 host-nginx-both.conf.example）
+
+services:
+  web:
+    ports:
+      - "127.0.0.1:18081:80"

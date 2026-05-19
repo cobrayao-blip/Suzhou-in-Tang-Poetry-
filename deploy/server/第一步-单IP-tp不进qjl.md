@@ -1,72 +1,60 @@
-# 第一步：单 IP，让 tp.textengine.cn 不再打开清嘉录
+# 单 IP：tp 不进清嘉录（推荐方案）
 
-**前提**：全唐诗 Docker 已正常。
+## 不要用：把 tp.conf 挂进清嘉录 web 容器
 
-```bash
-curl -s http://127.0.0.1:18080/api/health
-# 必须是 {"status":"ok"}
-```
-
-**原理**：本机只有一台 Nginx 占着 `443`。它原来用 `server_name _` 会吃掉所有域名。  
-再加一个 **`server_name tp.textengine.cn`** 的 server 块后，访问 `tp` 会优先走全唐诗，**不用改清嘉录业务代码**。
-
-全唐诗只提供 `/data/nginx-extra/` 里的片段；清嘉录仓库里的 `nginx.docker.conf` **不用动**。
-
----
-
-## A. 准备 tp 证书（全唐诗目录）
-
-```bash
-sudo mkdir -p /data/qts/cert /data/nginx-extra
-```
-
-把 `tp.textengine.cn` 的证书放到（文件名固定）：
-
-- `/data/qts/cert/tp.textengine.cn_bundle.crt`
-- `/data/qts/cert/tp.textengine.cn.key`
-
-有 `*.textengine.cn` 通配符时，内容正确即可，复制并重命名为上面两个文件。
-
-```bash
-sudo cp /opt/quatangshi/deploy/server/tp.textengine.cn.mount.conf /data/nginx-extra/tp.textengine.cn.conf
-```
-
----
-
-## B. 挂进当前占 443 的 web 容器（一次性）
-
-清嘉录 web 容器路径以你机器为准，常见 `/data/qjl/app`：
+该做法会让 **清嘉录无法登录**（与 tp 共用同一 Nginx 进程）。请删除这类 override：
 
 ```bash
 cd /data/qjl/app
-sudo cp /opt/quatangshi/deploy/server/docker-compose.override.example.yml ./docker-compose.override.yml
-sudo docker compose -f docker-compose.prod.yml -f docker-compose.override.yml \
-  --env-file .env.docker.prod up -d web
+sudo mv docker-compose.override.yml docker-compose.override.yml.bak 2>/dev/null || true
+sudo docker compose -f docker-compose.prod.yml --env-file .env.docker.prod up -d web
 ```
+
+确认 `https://qjl.textengine.cn` 能登录后再做下面步骤。
 
 ---
 
-## C. 验收
+## 正确做法：宿主机 Nginx 统一 443
+
+```text
+浏览器 → 宿主机 Nginx :443
+           ├─ qjl.textengine.cn → 127.0.0.1:18081（清嘉录容器，仅 HTTP）
+           └─ tp.textengine.cn   → 127.0.0.1:18080（全唐诗容器）
+```
+
+### 1. 全唐诗本机正常
+
+```bash
+curl -s http://127.0.0.1:18080/api/health
+```
+
+### 2. 清嘉录 web 释放 443（只做端口，不含 tp 配置）
+
+```bash
+cd /data/qjl/app
+sudo cp /opt/quatangshi/deploy/server/qjl-仅释放443-端口.override.example.yml ./docker-compose.override.yml
+sudo docker compose -f docker-compose.prod.yml -f docker-compose.override.yml \
+  --env-file .env.docker.prod up -d web
+curl -s http://127.0.0.1:18081/ | head -3
+```
+
+### 3. 安装宿主机 Nginx
+
+```bash
+sudo apt-get install -y nginx
+sudo cp /opt/quatangshi/deploy/server/host-nginx-both.conf.example /etc/nginx/sites-available/textengine.conf
+sudo ln -sf /etc/nginx/sites-available/textengine.conf /etc/nginx/sites-enabled/textengine.conf
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+证书路径见 `证书路径.md`（tp 在 `/data/qts/cert/`）。
+
+### 4. 验收
 
 ```bash
 curl -s https://tp.textengine.cn/api/health
-```
-
-应为 `{"status":"ok"}`。浏览器应是「全唐诗 · 检索」，不是清嘉录登录。
-
-```bash
 curl -sI https://qjl.textengine.cn | head -3
 ```
 
-清嘉录仍应正常（未改其 `server_name _` 块，只多了 tp 专用块）。
-
----
-
-## 以后更新
-
-| 项目 | 做法 |
-|------|------|
-| 全唐诗 | `cd /opt/quatangshi` → `git pull` → `docker compose ... up -d --build` |
-| 清嘉录 | 在清嘉录目录 `git pull`；**保留** `docker-compose.override.yml` |
-
-若清嘉录 `up -d web` 后 tp 又不对，检查 override 是否还在：`cat docker-compose.override.yml`
+浏览器分别登录清嘉录、打开全唐诗。
